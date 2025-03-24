@@ -1,4 +1,4 @@
-module flagit
+module github.com/mxurlx/flagit
 
 go 1.24.1
 

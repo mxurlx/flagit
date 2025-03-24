@@ -1,12 +1,13 @@
 package flagit
 
 import (
-	"flagit/cmd"
-	"flagit/utils"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/mxurlx/flagit/cmd"
+	"github.com/mxurlx/flagit/utils"
 )
 
 func InitFlagsMap() error {
