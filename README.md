@@ -85,12 +85,12 @@ var Flags = map[string]map[string][]string{
     ".": {  // Flags applicable when no subcommand is specified.
         "debug": {"D", "false", "Show debugging process"}
     }
-	"add": {
-		"username": {"u", "<mandatory>", "Username to create"},
-		"homedir": {"d", "", "Home directory of the user"},
-		"shell":   {"s", "", "Login shell of the user"},
-		// ... more flags ...
-	},
+    "add": {
+        "username": {"u", "<mandatory>", "Username to create"},
+        "homedir": {"d", "", "Home directory of the user"},
+        "shell":   {"s", "", "Login shell of the user"},
+        // ... more flags ...
+    },
 }
 ```
 
