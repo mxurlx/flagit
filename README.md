@@ -96,4 +96,4 @@ var Flags = map[string]map[string][]string{
 
 *   The outer key is the **subcommand** (e.g., `"add"`). Use `"."` to indicate flags that apply when no subcommand is provided.
 *   Each inner map represents the flags for that subcommand.
-*   Each flag entry has a slice of strings: `{"short_flag", "default_value| <mandatory>", "description"}`.
+*   Each flag entry has a slice of strings: `{"short_flag", "default_value | <mandatory>", "description"}`.
