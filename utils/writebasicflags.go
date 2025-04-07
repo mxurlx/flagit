@@ -33,7 +33,8 @@ var Flags = map[string]map[string][]string{
 		"version": {"v", "false", "Show version"},
 	},
 	"subcommand": {
-		"username": {"u", "<mandatory>", "Username to create"},
+		"username": {"1", "<mandatory>", "Username to create"},
+		"another":  {"2", "<mandatory>", "Another username to create"},
 		"homedir":  {"d", "", "Home directory of the user"},
 		"shell":    {"s", "", "Login shell of the user"},
 		"group":    {"g", "", "Primary group of the user"},
