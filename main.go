@@ -124,7 +124,9 @@ func populateFlags(flags map[string]any, subcmd, flagName, value string, flagsMa
 		case "int":
 			intVal, err := strconv.Atoi(value)
 			if err != nil {
-				fmt.Printf("error: expected int value for %s, got '%s'\n", flagName, value)
+				if value != "" {
+					fmt.Printf("error: expected int value for %s, got '%s'\n", flagName, value)
+				}
 				break
 			}
 			flags[flagName] = intVal
