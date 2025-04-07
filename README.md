@@ -103,3 +103,6 @@ var Flags = map[string]map[string][]string{
 *   Each inner map represents the flags for that subcommand.
 *   For **mandatory arguments**, the first element in the slice is a number representing its position in the argument list.  For example, `"1"` indicates the first mandatory argument after the subcommand itself.
 *   Each flag entry has a slice of strings: `{"short_flag | mandatory_argument_position", "default_value | <mandatory>", "description"}`.
+*   For named flags, the first element is the short flag name.
+*   The second element of each slice is the default value or `<mandatory>`.
+*   The third element is the description of the flag/argument.
