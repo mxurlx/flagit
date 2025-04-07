@@ -82,18 +82,24 @@ Flags are declared in a map within your project (e.g., `common/flags.go`):
 package common
 
 var Flags = map[string]map[string][]string{
-    ".": {  // Flags applicable when no subcommand is specified.
-        "debug": {"D", "false", "Show debugging process"}
-    }
-    "add": {
-        "username": {"u", "<mandatory>", "Username to create"},
-        "homedir": {"d", "", "Home directory of the user"},
-        "shell":   {"s", "", "Login shell of the user"},
-        // ... more flags ...
-    },
+	".": {
+		"help":    {"h", "false", "Show help message"},
+		"version": {"v", "false", "Show version"},
+	},
+	"subcommand": {
+		"username": {"1", "<mandatory>", "Username to create"},
+		"another":  {"2", "<mandatory>", "Another username to create"},
+		"homedir":  {"d", "", "Home directory of the user"},
+		"shell":    {"s", "", "Login shell of the user"},
+		"group":    {"g", "", "Primary group of the user"},
+		"groups":   {"G", "", "Supplementary groups of the user (comma-separated)"},
+		"debug":    {"D", "false", "Show debugging process"},
+		"number":   {"n", "13134", "Number"},
+	},
 }
 ```
 
 *   The outer key is the **subcommand** (e.g., `"add"`). Use `"."` to indicate flags that apply when no subcommand is provided.
 *   Each inner map represents the flags for that subcommand.
-*   Each flag entry has a slice of strings: `{"short_flag", "default_value | <mandatory>", "description"}`.
+*   For **mandatory arguments**, the first element in the slice is a number representing its position in the argument list.  For example, `"1"` indicates the first mandatory argument after the subcommand itself.
+*   Each flag entry has a slice of strings: `{"short_flag | mandatory_argument_position", "default_value | <mandatory>", "description"}`.
