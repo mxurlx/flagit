@@ -106,3 +106,7 @@ var Flags = map[string]map[string][]string{
 *   For named flags, the first element is the short flag name.
 *   The second element of each slice is the default value or `<mandatory>`.
 *   The third element is the description of the flag/argument.
+
+## Example Usage
+
+See [gosplitter](https://github.com/mxurlx/gosplitter) for a practical example of how to integrate and utilize Flagit in your Go CLI projects
