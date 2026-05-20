@@ -3,6 +3,7 @@ package flagit
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -43,17 +44,40 @@ func shouldGenerateFiles() bool {
 		return false
 	}
 
-	executable, err := os.Executable()
+	filePath, err := os.Getwd()
 	if err != nil {
 		return false
 	}
 
-	return strings.Contains(executable, string(os.PathSeparator)+"go-build")
+	return isFlagitSourceWorkspace(filePath)
+}
+
+func isFlagitSourceWorkspace(filePath string) bool {
+	if _, err := os.Stat(filepath.Join(filePath, "go.mod")); err != nil {
+		return false
+	}
+
+	if _, err := os.Stat(filepath.Join(filePath, "common", "flags.go")); err == nil {
+		return true
+	}
+
+	if _, err := os.Stat(filepath.Join(filePath, "flags_hash.txt")); err == nil {
+		return true
+	}
+
+	if _, err := os.Stat(filepath.Join(filePath, "cmd", "cmdfuncs.go")); err == nil {
+		return true
+	}
+
+	return false
 }
 
 func ExecuteCmd(subcmd string, flags map[string]any, mandatoryArgs []string, cmdFuncs map[string]func(flags map[string]any, mandatoryArgs []string) error) error {
 	command, ok := cmdFuncs[subcmd]
 	if !ok {
+		if subcmd != "." && len(flags) == 0 && len(mandatoryArgs) == 0 {
+			return nil
+		}
 		return fmt.Errorf("unknown subcommand '%s'", subcmd)
 	}
 
