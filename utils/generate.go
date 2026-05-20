@@ -3,12 +3,13 @@ package utils
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 const flagsHashFile = "flags_hash.txt"
 
 func GenFiles(filePath string, flags map[string]map[string][]string) error {
-	lastFlagsHash, err := readHashFromFile()
+	lastFlagsHash, err := readHashFromFile(filePath)
 	if err != nil && !os.IsNotExist(err) {
 		return fmt.Errorf("error: failed to read last hash from file: %w", err)
 	}
@@ -28,7 +29,7 @@ func GenFiles(filePath string, flags map[string]map[string][]string) error {
 		return fmt.Errorf("error: couldn't generate Cmd files: %w", err)
 	}
 
-	err = writeHashToFile(currentFlagsHash)
+	err = writeHashToFile(filePath, currentFlagsHash)
 	if err != nil {
 		return fmt.Errorf("error: failed to write current hash to file: %w", err)
 	}
@@ -40,14 +41,14 @@ func calcFlagsHash(flags map[string]map[string][]string) string {
 	return fmt.Sprintf("%v", flags)
 }
 
-func readHashFromFile() (string, error) {
-	data, err := os.ReadFile(flagsHashFile)
+func readHashFromFile(filePath string) (string, error) {
+	data, err := os.ReadFile(filepath.Join(filePath, flagsHashFile))
 	if err != nil && !os.IsNotExist(err) {
 		return "", fmt.Errorf("error: failed to read hash from file: %w", err)
 	}
 	return string(data), nil
 }
 
-func writeHashToFile(hash string) error {
-	return os.WriteFile(flagsHashFile, []byte(hash), 0644)
+func writeHashToFile(filePath, hash string) error {
+	return os.WriteFile(filepath.Join(filePath, flagsHashFile), []byte(hash), 0644)
 }

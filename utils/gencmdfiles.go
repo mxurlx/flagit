@@ -20,7 +20,7 @@ func GenCmdFiles(filePath string, flags map[string]map[string][]string) error {
 		if key == "." {
 			cmd = "root"
 		}
-		outputPath := filepath.Join("cmd", fmt.Sprintf("%s.go", cmd))
+		outputPath := filepath.Join(filePath, "cmd", fmt.Sprintf("%s.go", cmd))
 		if _, err := os.Stat(outputPath); err == nil {
 			continue
 		}

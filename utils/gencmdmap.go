@@ -12,7 +12,7 @@ func GenCmdMap(filePath string, flags map[string]map[string][]string) error {
 	if err != nil {
 		return fmt.Errorf("error: failed to create generated directory: %w", err)
 	}
-	outputPath := filepath.Join("cmd", "cmdfuncs.go")
+	outputPath := filepath.Join(filePath, "cmd", "cmdfuncs.go")
 
 	file, err := os.Create(outputPath)
 

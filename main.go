@@ -11,6 +11,10 @@ import (
 )
 
 func InitFlagsMap() error {
+	if !shouldGenerateFiles() {
+		return nil
+	}
+
 	return utils.InitFlagsMap()
 }
 
@@ -19,12 +23,32 @@ func PrintHelp(command string, flagsMap map[string]map[string][]string) {
 }
 
 func GenFiles(flags map[string]map[string][]string) error {
+	if !shouldGenerateFiles() {
+		return nil
+	}
+
 	filePath, err := os.Getwd()
 	if err != nil {
 		return err
 	}
 
 	return utils.GenFiles(filePath, flags)
+}
+
+func shouldGenerateFiles() bool {
+	switch strings.ToLower(os.Getenv("FLAGIT_GENERATE")) {
+	case "1", "true", "yes", "on":
+		return true
+	case "0", "false", "no", "off":
+		return false
+	}
+
+	executable, err := os.Executable()
+	if err != nil {
+		return false
+	}
+
+	return strings.Contains(executable, string(os.PathSeparator)+"go-build")
 }
 
 func ExecuteCmd(subcmd string, flags map[string]any, mandatoryArgs []string, cmdFuncs map[string]func(flags map[string]any, mandatoryArgs []string) error) error {
@@ -39,7 +63,10 @@ func ExecuteCmd(subcmd string, flags map[string]any, mandatoryArgs []string, cmd
 }
 
 func ParseFlags(arguments []string, flagsMap map[string]map[string][]string) (string, map[string]any, []string, error) {
-	args := arguments[1:]
+	args := []string{}
+	if len(arguments) > 1 {
+		args = arguments[1:]
+	}
 	subcmd := "."
 	flags := make(map[string]any)
 	mandatoryArgs := []string{}
@@ -72,10 +99,12 @@ func ParseFlags(arguments []string, flagsMap map[string]map[string][]string) (st
 			flagName := ""
 			value := ""
 			flagType := ""
+			isShortFlag := false
 
 			if strings.HasPrefix(arg, "--") {
 				flagName = arg[2:]
 			} else {
+				isShortFlag = true
 				shorts := splitShortFlags(args[i])
 				for _, flag := range shorts {
 					flagName = flag
@@ -89,13 +118,18 @@ func ParseFlags(arguments []string, flagsMap map[string]map[string][]string) (st
 					populateFlags(flags, subcmd, flagName, value, flagsMap, false)
 				}
 			}
+			if _, ok := flagsMap[subcmd][flagName]; !ok {
+				return subcmd, flags, mandatoryArgs, fmt.Errorf("error: unknown flag '%s' for subcommand '%s'", flagName, subcmd)
+			}
 			flagType = getDataType(flagsMap[subcmd][flagName][1])
 			i++
 			if i < len(args) && !strings.HasPrefix(args[i], "-") && flagType != "bool" {
 				value = args[i]
 				i++
 			}
-			populateFlags(flags, subcmd, flagName, value, flagsMap, false)
+			if !isShortFlag || flagType != "bool" {
+				populateFlags(flags, subcmd, flagName, value, flagsMap, false)
+			}
 		} else {
 			mandatoryArgs = append(mandatoryArgs, arg)
 			i++
